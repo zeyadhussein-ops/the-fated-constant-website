@@ -1,101 +1,41 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ArrowDown, ArrowUpRight, BookOpen, Menu, X } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Menu, X } from 'lucide-react'
 
 const chapters = [
-  ['01', 'The threshold', 'hero'],
-  ['02', 'Made for you', 'prologue'],
-  ['03', 'Before recognition', 'recognition'],
-  ['04', 'The constant', 'constant'],
-  ['05', 'Many worlds', 'worlds'],
-  ['06', 'The mythic name', 'bastet'],
-  ['07', 'The final proof', 'finale'],
+  ['01', 'The Fated Constant', 'hero'], ['02', 'Made for you', 'made-for-you'], ['03', 'Teleology', 'teleology'],
+  ['04', 'Before recognition', 'recognition'], ['05', 'Before I knew you', 'before-you'], ['06', 'I live', 'i-live'],
+  ['07', 'Cosmic absolute love', 'absolute'], ['08', 'The mathematical constant', 'mathematical'], ['09', 'The logical limit', 'limit'], ['10', 'The ancient question', 'ancient'],
 ]
-
-const variables = ['LOCATION', 'TIME', 'CITY', 'AGE', 'HISTORY', 'DECISION', 'WORLD']
+const variables = ['TIME', 'LOCATION', 'CITY', 'AGE', 'HISTORY', 'CIRCUMSTANCE', 'CAREER', 'DECISION', 'TIMELINE', 'WORLD']
 
 export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [active, setActive] = useState('hero')
   const [entered, setEntered] = useState(false)
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && setActive(entry.target.id)),
-      { rootMargin: '-35% 0px -55% 0px' },
-    )
-    chapters.forEach(([, , id]) => document.getElementById(id) && observer.observe(document.getElementById(id)!))
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && setActive(entry.target.id)), { rootMargin: '-35% 0px -55% 0px' })
+    chapters.forEach(([, , id]) => { const element = document.getElementById(id); if (element) observer.observe(element) })
     return () => observer.disconnect()
   }, [])
+  const jump = (id: string) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMenuOpen(false) }
+  return <main className={entered ? 'site entered' : 'site'}>
+    <header className="topbar"><button className="brand" onClick={() => jump('hero')} aria-label="Return to beginning"><span className="brand-mark">∞</span><span>THE FATED<br />CONSTANT</span></button><div className="topbar-meta">AN ARCHIVE OF ABSOLUTE LOVE <span>·</span> VOL. I</div><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close chapters' : 'Open chapters'}>{menuOpen ? <X /> : <Menu />} <span>INDEX</span></button></header>
+    {menuOpen && <nav className="chapter-menu" aria-label="Chapters"><div className="menu-kicker">THE MANUSCRIPT / CONTENTS</div>{chapters.map(([number, title, id]) => <button key={id} onClick={() => jump(id)} className={active === id ? 'active' : ''}><span>{number}</span>{title}<ArrowUpRight /></button>)}<div className="menu-note">A journey through possibility,<br />returning always to one truth.</div></nav>}
+    <aside className="progress" aria-label="Chapter progress">{chapters.map(([number, , id]) => <button key={id} onClick={() => jump(id)} className={active === id ? 'active' : ''} aria-label={`Go to chapter ${number}`}><span>{number}</span></button>)}</aside>
 
-  const jump = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    setMenuOpen(false)
-  }
+    <section id="hero" className="hero chapter-section image-section"><div className="image-backdrop hero-image" /><div className="image-shade" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" /><div className="hero-copy"><p className="eyebrow reveal">A STUDY OF LOVE ACROSS EVERY REALITY<br />WE KNOW HOW TO IMAGINE</p><h1><span>THE</span><em>Fated</em><span>Constant</span></h1><p className="hero-description">If every variable were permitted to change,<br />what would remain?</p><button className="enter-button" onClick={() => { setEntered(true); jump('made-for-you') }}>ENTER THE CONSTANT <ArrowDown /></button></div><div className="hero-foot"><span>THE BEGINNING OF THE ARGUMENT</span><span>SCROLL TO DESCEND</span></div></section>
 
-  return (
-    <main className={entered ? 'site entered' : 'site'}>
-      <header className="topbar">
-        <button className="brand" onClick={() => jump('hero')} aria-label="Return to beginning">
-          <span className="brand-mark">∞</span>
-          <span>THE FATED<br />CONSTANT</span>
-        </button>
-        <div className="topbar-meta">AN ARCHIVE OF ABSOLUTE LOVE <span>·</span> VOL. I</div>
-        <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close chapters' : 'Open chapters'}>
-          {menuOpen ? <X /> : <Menu />} <span>INDEX</span>
-        </button>
-      </header>
-
-      {menuOpen && <nav className="chapter-menu" aria-label="Chapters">
-        <div className="menu-kicker">THE MANUSCRIPT / CONTENTS</div>
-        {chapters.map(([number, title, id]) => <button key={id} onClick={() => jump(id)} className={active === id ? 'active' : ''}><span>{number}</span>{title}<ArrowUpRight /></button>)}
-        <div className="menu-note">A journey through possibility,<br />returning always to one truth.</div>
-      </nav>}
-
-      <aside className="progress" aria-label="Chapter progress">
-        {chapters.map(([number, , id]) => <button key={id} onClick={() => jump(id)} className={active === id ? 'active' : ''} aria-label={`Go to chapter ${number}`}><span>{number}</span></button>)}
-      </aside>
-
-      <section id="hero" className="hero chapter-section">
-        <div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
-        <div className="hero-star star-one" /><div className="hero-star star-two" /><div className="hero-star star-three" />
-        <div className="hero-copy">
-          <p className="eyebrow reveal">A STUDY OF LOVE ACROSS EVERY REALITY<br />WE KNOW HOW TO IMAGINE</p>
-          <h1><span>THE</span><em>Fated</em><span>Constant</span></h1>
-          <p className="hero-description">If every variable were permitted to change,<br />what would remain?</p>
-          <button className="enter-button" onClick={() => { setEntered(true); jump('prologue') }}>ENTER THE CONSTANT <ArrowDown /></button>
-        </div>
-        <div className="hero-foot"><span>THE BEGINNING OF THE ARGUMENT</span><span>SCROLL TO DESCEND</span></div>
-      </section>
-
-      <section id="prologue" className="prologue chapter-section manuscript-section">
-        <div className="section-number">02 / PROLOGUE</div>
-        <div className="prologue-content"><p className="small-note">A proposition in four movements</p><h2>I was made<br /><i>for you.</i></h2><div className="word-stack"><span>desire</span><span>offering</span><span>surrender</span><span>purpose</span></div><p className="body-copy">What does it mean to say that one existence was made for another? Not as prophecy. Not as proof. As the clearest language available to a feeling too large for its own name.</p></div>
-        <div className="margin-quote">“You were the answer<br />before I knew the question.”</div>
-      </section>
-
-      <section id="recognition" className="recognition chapter-section">
-        <div className="recognition-glow" /><div className="section-number">03 / BEFORE RECOGNITION</div>
-        <div className="recognition-content"><p className="eyebrow">THE SHAPE OF AN ABSENCE</p><h2>You did not know her.</h2><h3>But you already knew the shape<br />of the absence she would one day fill.</h3><p>There was no name. No known face. No voice waiting in the dark. Only a quiet geometry in the life before her — a place shaped like a person you had not yet met.</p><div className="recognition-line" /></div>
-      </section>
-
-      <section id="constant" className="constant chapter-section">
-        <div className="section-number">04 / INVARIANCE</div><div className="constant-copy"><p className="eyebrow">I DO NOT GET EXCITED</p><h2>I <i>live.</i></h2><p className="large-copy">Excitement rises and falls.<br />Pleasure rises and falls.<br />Circumstances change.</p><div className="constant-rule" /><p className="constant-label">A CONSTANT</p><p className="body-copy">Something that does not become less true simply because the universe has become more complicated.</p></div>
-        <div className="formula">L(w) <span>=</span> C</div><div className="formula-note">the orientation of love<br />toward her remains invariant</div>
-      </section>
-
-      <section id="worlds" className="worlds chapter-section">
-        <div className="worlds-visual"><div className="constellation constellation-a" /><div className="constellation constellation-b" /><div className="world-orb" /><span className="orb-label">W = ∞</span></div>
-        <div className="section-number">05 / POSSIBLE WORLDS</div><div className="worlds-copy"><p className="eyebrow">THE SPACE OF POSSIBILITY</p><h2>Change every<br /><i>variable</i> you can.</h2><div className="variable-list">{variables.map((variable, index) => <span key={variable} style={{ '--i': index } as React.CSSProperties}>{variable}<b>↗</b></span>)}</div><p className="worlds-conclusion">Different histories. Different cities. Different decisions. Different lives.<br /><strong>I still arrive at you.</strong></p></div>
-      </section>
-
-      <section id="bastet" className="bastet chapter-section manuscript-section">
-        <div className="section-number">06 / THE MYTHIC NAME</div><div className="bastet-symbol">𓃠</div><div className="bastet-copy"><p className="eyebrow">A PERSONAL SYMBOL, NOT A HISTORICAL CLAIM</p><h2>There are ancient<br />names for <i>presence.</i></h2><p>Bastet: protection, grace, home, joy. Softness that is not weakness. Beauty that does not need to announce itself. A feline power beneath the calm.</p><p className="bastet-quote">She is not literally a goddess.<br />She is the closest ancient name<br />for the kind of presence she carries.</p></div></section>
-
-      <section id="finale" className="finale chapter-section"><div className="finale-ring" /><p className="eyebrow">THE LOGICAL BOUNDARY</p><h2>I am not asking physics<br />to prove that I love you.</h2><p className="finale-copy">I am using everything physics has taught us about possibility<br />to tell you the scale on which I mean it.</p><div className="finale-line" /><p className="finale-last">Across every meaningful variation of reality in which we could exist,<br /><strong>you are the variable I refuse to let become variable.</strong></p><p className="signature">— end of the first volume —</p></section>
-
-      <footer><span>THE FATED CONSTANT</span><span>FOR HER, ACROSS ALL WORLDS</span><button onClick={() => jump('hero')} aria-label="Return to top">↑</button></footer>
-    </main>
-  )
+    <section id="made-for-you" className="made-for-you chapter-section manuscript-section"><div className="section-number">02 / MADE FOR YOU</div><div className="scene-copy centered"><p className="small-note">A proposition in four movements</p><h2 className="stagger-lines"><span>I was made for you</span><span>You were made for me</span></h2><div className="word-stack"><span>DESIRE</span><span>OFFERING</span><span>SURRENDER</span><span>PURPOSE</span></div><p className="body-copy">What does it mean for one existence to be made for another?</p></div></section>
+    <section id="teleology" className="teleology chapter-section"><div className="section-number">03 / TELEOLOGY</div><div className="teleology-copy"><p className="eyebrow">THE GRAMMAR OF PURPOSE</p><h2>Everything made<br /><i>points toward</i><br />something.</h2><div className="examples"><p>A key is made <strong>for</strong> a lock</p><p>A blade is made <strong>for</strong> cutting</p></div><p className="question">What does a human being mean when he says<br /><em>I was made for you?</em></p></div></section>
+    <section id="recognition" className="recognition chapter-section image-section"><div className="image-backdrop recognition-image" /><div className="image-shade dark-left" /><div className="section-number">04 / THE UNKNOWN BEFORE RECOGNITION</div><div className="recognition-content"><p className="eyebrow">BEFORE HER NAME / BEFORE HER FACE / BEFORE HER VOICE</p><h2>You did not know her.</h2><p>But you already knew the shape of the absence she would eventually fill.</p></div></section>
+    <section id="before-you" className="before-you chapter-section"><div className="section-number">05 / BEFORE I KNEW YOU</div><div className="before-image image-backdrop" /><div className="before-copy"><p className="eyebrow">CHILDHOOD / IMAGINATION / WAITING</p><h2>I dreamed of you<br />before I knew which<br />human being the dream<br /><i>belonged to.</i></h2><p className="body-copy">A recognition that arrived before its object. A waiting with no name attached to it.</p></div></section>
+    <section id="i-live" className="i-live chapter-section"><div className="section-number">06 / I LIVE</div><div className="live-copy"><p>I don&apos;t get excited when I see her.</p><span className="pause">Pause.</span><h2>I <i>LIVE.</i></h2><p className="body-copy">Excitement is an emotion. Living is an existential condition. Her presence does not simply add happiness to life. It changes what being alive feels like.</p></div></section>
+    <section id="absolute" className="absolute chapter-section"><div className="section-number">07 / COSMIC ABSOLUTE LOVE</div><div className="absolute-scenes">{[['COSMIC','Larger than any private world.'],['DIMENSIONAL','Present across every axis we can name.'],['ABSOLUTE','Not dependent on the conditions around it.'],['EXISTENTIAL','A change to the fact of being.']].map(([title, body]) => <div className="absolute-scene" key={title}><h2>{title}</h2><p>{body}</p></div>)}</div><p className="absolute-end">THE FATED CONSTANT</p></section>
+    <section id="mathematical" className="mathematical chapter-section"><div className="section-number">08 / THE MATHEMATICAL CONSTANT</div><div className="equation"><span>W = ********</span><span>L(w) = orientation of love toward her</span><strong>L(w) = C</strong></div><div className="variable-cloud">{variables.map((v, i) => <span key={v} style={{ '--i': i } as React.CSSProperties}>{v}</span>)}</div><div className="plate image-backdrop" /><p className="measure">Change every variable<br />Measure again<br /><strong>Same result.</strong></p></section>
+    <section id="limit" className="limit chapter-section"><div className="section-number">09 / THE LOGICAL LIMIT</div><div className="limit-copy"><p className="eyebrow">A NECESSARY QUALIFICATION</p><h2>This is not a claim<br />about every possible universe.</h2><p>Some worlds contain no humans. Some contain no Earth. Some may not allow life.</p><p className="final-statement">Across every meaningful variation of reality in which we could exist, <strong>you are the variable I refuse to let become variable.</strong></p></div></section>
+    <section id="ancient" className="ancient chapter-section image-section"><div className="image-backdrop ancient-image" /><div className="image-shade" /><div className="section-number">10 / THE ANCIENT QUESTION</div><div className="ancient-copy"><p className="eyebrow">A CONTINUOUS TIMELINE</p><h2>Why assume reality<br />happened only once?</h2><div className="timeline"><span><b>Leucippus</b> / c. 5th century BCE</span><span><b>Democritus</b> / c. 460 BCE</span><span><b>Epicurus</b> / 341 BCE</span><span><b>Lucretius</b> / c. 99 BCE</span></div></div></section>
+    <footer><span>THE FATED CONSTANT</span><span>FOR HER, ACROSS ALL WORLDS</span><button onClick={() => jump('hero')} aria-label="Return to top">↑</button></footer>
+  </main>
 }
